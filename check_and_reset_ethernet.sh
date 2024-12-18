@@ -27,19 +27,20 @@ latest_error=$(journalctl -k --since "10 seconds ago" | grep "igc.*PCIe link los
 # Check the state of the interface and the availability of the network
 if [[ -n "$latest_error" ]]; then
   echo "$(date): Detected PCIe link lost error." | tee -a "$LOG_FILE"
+
+  if ip link show eno1 | grep -q "state UP"; then
+    echo "$(date): Network interface eno1 is UP. Checking internet connectivity..." | tee -a "$LOG_FILE"
+    if ! ping -c 1 "$PING_TARGET" >/dev/null 2>&1; then
+      echo "$(date): Network interface eno1 is UP but no internet connectivity. Performing reset..." | tee -a "$LOG_FILE"
+      pci_reset
+    else
+      echo "$(date): Network interface eno1 is UP and internet is reachable. No reset needed." | tee -a "$LOG_FILE"
+    fi
+  else
+    echo "$(date): Network interface eno1 is DOWN. Performing reset..." | tee -a "$LOG_FILE"
+    pci_reset
+  fi
+
 else
   echo "$(date): No recent PCIe link lost errors detected." | tee -a "$LOG_FILE"
-fi
-
-if ip link show eno1 | grep -q "state UP"; then
-  echo "$(date): Network interface eno1 is UP. Checking internet connectivity..." | tee -a "$LOG_FILE"
-  if ! ping -c 1 "$PING_TARGET" >/dev/null 2>&1; then
-    echo "$(date): Network interface eno1 is UP but no internet connectivity. Performing reset..." | tee -a "$LOG_FILE"
-    pci_reset
-  else
-    echo "$(date): Network interface eno1 is UP and internet is reachable. No reset needed." | tee -a "$LOG_FILE"
-  fi
-else
-  echo "$(date): Network interface eno1 is DOWN. Performing reset..." | tee -a "$LOG_FILE"
-  pci_reset
 fi
