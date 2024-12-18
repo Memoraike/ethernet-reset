@@ -45,11 +45,9 @@ sudo systemctl start check_ethernet.timer
 ethernet-reset/
 ├── PKGBUILD                        # Build script for the package
 ├── README.md                       # Documentation
-├── src/
-│   ├── check_and_reset_ethernet.sh     # Main script
-│   └── systemd/
-│     ├── check_ethernet.service      # systemd service
-│     └── check_ethernet.timer        # systemd timer
+├── check_and_reset_ethernet.sh     # Main script
+├── check_ethernet.service          # systemd service
+├── check_ethernet.timer            # systemd timer
 ```
 
 ---
