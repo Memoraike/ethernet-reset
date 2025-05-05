@@ -18,7 +18,7 @@ This project provides a script and systemd services for automatic monitoring and
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-repo/ethernet-reset.git
+   git clone https://github.com/Memoraike/ethernet-reset.git
    cd ethernet-reset
    ```
 
